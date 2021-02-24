@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SDK</title>
+    <!-- <script>
+        (function (a,b,c,d,e) {
+        var f=a.exampal={_i:{k:e,cls:[]}};c.forEach(function(fn){f[fn]=function(){f._i.cls.push([fn,Array.prototype.slice.call(arguments)]);}});
+        var s=b.createElement('script');s.async=true;s.dataset.env=e;s.src=d,fs=b.getElementsByTagName('script')[0];fs.parentNode.insertBefore(s,fs);
+        })(window,document,['renderSsoButton','callSSO','setCallback'],'http://localhost:8000/sdk.js','74615efb-09f5-4bfd-8f47-948ed5cb3628');
+    </script> -->
+    <script>
+        (function (a,b,c,d,e) {
+        var f=a.exampal={_i:{k:e,cls:[]}};c.forEach(function(fn){f[fn]=function(){f._i.cls.push([fn,Array.prototype.slice.call(arguments)]);}});
+        var s=b.createElement('script');s.async=true;s.dataset.env=e;s.src=d,fs=b.getElementsByTagName('script')[0];fs.parentNode.insertBefore(s,fs);
+        })(window,document,['renderSsoButton','setCallback'],'https://staging-beable.exampal.com/sdk/1.0.13/sdk.js','74615efb-09f5-4bfd-8f47-948ed5cb3628');
+    </script>
+</head>
+<body>
+    <div>
+        <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum similique consequatur ducimus voluptates reiciendis quaerat provident impedit, deleniti suscipit exercitationem maxime, consectetur, reprehenderit laboriosam. Repellendus quam tempora sit eveniet quasi.
+        </p>
+    </div>
+    <script>
+        exampal.setCallback(function(event){
+            console.log("callback",event.data);
+        });
+        function test() {
+            let payload = 'ZXlKMGVYQWlPaUpLVjFRaUxDSmhiR2NpT2lKSVV6STFOaUo5LmV5SnBjM01pT2lKaVpXRmliR1VpTENKaGRXUnBaVzVqWlNJNkluUmxjM1JoYUdWaFpDSXNJbk5wZEdWSlpDSTZNVEk0TnpNc0luSmxkSFZ5YmxWU1RDSTZJbWgwZEhCek9pOHZkR1Z6ZEdGb1pXRmtZbVZoWW14bExuRmhMbUpsWVdKc1pTNWpiMjB2Ykc5bmFXNHZiRzluYjNWMElpd2lZMnhoYzNObGN5STZXM3NpWTJ4aGMzTkpaQ0k2SWprMk4yVTVZbUV3TFRKbU1qUXRNVEZsWWkwNFpUWmlMVE14T1RGaU9UUTRaV1l4TXlJc0ltTnNZWE56VG1GdFpTSTZJa1JsYlc4Z1EyeGhjM01pTENKamJHRnpjMU52ZFhKalpXUkpaQ0k2SWpnd01ERXRNakF5TVRBeU1qTWlMQ0p6WTJodmIyeEpaQ0k2SWprMk5qUXdaV013TFRKbU1qUXRNVEZsWWkwNFpUWmlMVE14T1RGaU9UUTRaV1l4TXlJc0luTmphRzl2YkU1aGJXVWlPaUpVWlhOMElGTmphRzl2YkNJc0luTmphRzl2YkZOdmRYSmpaV1JKWkNJNklqTXdNREF0TWpBeU1UQXlNak1pTENKeWIyeGxJam9pZEdWaFkyaGxjaUo5TEhzaVkyeGhjM05KWkNJNklqazJOMlZqTW1Jd0xUSm1NalF0TVRGbFlpMDRaVFppTFRNeE9URmlPVFE0WldZeE15SXNJbU5zWVhOelRtRnRaU0k2SWtSbGJXOGdRMnhoYzNNZ1FTSXNJbU5zWVhOelUyOTFjbU5sWkVsa0lqb2lPREF3TWkweU1ESXhNREl5TXlJc0luTmphRzl2YkVsa0lqb2lPVFkyTkRCbFl6QXRNbVl5TkMweE1XVmlMVGhsTm1JdE16RTVNV0k1TkRobFpqRXpJaXdpYzJOb2IyOXNUbUZ0WlNJNklsUmxjM1FnVTJOb2IyOXNJaXdpYzJOb2IyOXNVMjkxY21ObFpFbGtJam9pTXpBd01DMHlNREl4TURJeU15SXNJbkp2YkdVaU9pSjBaV0ZqYUdWeUluMWRMQ0p1WW1ZaU9qRTJNVFF3T0RrNE5UVXNJbWxoZENJNk1UWXhOREE0T1RnMU5Td2laWGh3SWpveE5qRTFNams1TkRVMUxDSnpkV0lpT2lJNU5qbGpaREl3TUMweVpqSTBMVEV4WldJdE9HVTJZaTB6TVRreFlqazBPR1ZtTVRNaUxDSjFjMlZ5U1dRaU9pSTVOamxqWkRJd01DMHlaakkwTFRFeFpXSXRPR1UyWWkwek1Ua3hZamswT0dWbU1UTWlMQ0oxYzJWeVUyOTFjbU5sWkVsa0lqb2lOakF3TVMweU1ESXhNREl5TXlJc0luVnpaWEp1WVcxbElqb2lkR1ZoWTJobGNqRWlMQ0ptYVhKemRFNWhiV1VpT2lKMFpXRmphR1Z5Wm1seWMzUXhJaXdpYkdGemRFNWhiV1VpT2lKMFpXRmphR1Z5YkdGemRERWlMQ0pqYjNWeWMyVkpaQ0k2SWxOQlZDSXNJbVJwYzNSeWFXTjBTV1FpT2pFeU9EY3pMQ0prYVhOMGNtbGpkRTVoYldVaU9pSlVaWE4wUVdobFlXUWdVMkZ1WkdKdmVDSXNJbTV2Ym1ObElqb2lOVGsyTlRVMFpEUmlOR1JrT0dSbU56aGhZemxrT1daa09HSmlNVGd3WmpNelltWXpaR05oWkdVek1EWm1NR1ZtWldGa01XVmhNR0k1WVRRell6azJOU0lzSW5OMFlYUmxJam9pTTJGbFpXWmtOek01TTJVMU4yVTVaR015TXpneU9XVTVZbVU1WlRJM016QXdZamRpTXpOaE5UUmlZVFJoT0RBNU5XWTROVFkwTVRWbE5HRXpOVGN3TXlJc0luUnBiV1Z6ZEdGdGNDSTZNVFl4TkRBNE9UZzFOU3dpYW5ScElqb2lZbUZpT1RNMFlUVXROMkV4TnkwMFlUSXlMVGcxTlRFdE1XSmtZVGcwTVRjNU9ETmlJbjAueFlXZEZtRnJ1TUR5dVFuU2ZQaFFFY3hXblAyTldGeHBfOEFkQURTUVZLOA==';
+            // console.log(exampal);
+            exampal.callSSO({'sig':payload});
+        }
+    </script>
+    <div>
+        <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum similique consequatur ducimus voluptates reiciendis quaerat provident impedit, deleniti suscipit exercitationem maxime, consectetur, reprehenderit laboriosam. Repellendus quam tempora sit eveniet quasi.
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum similique consequatur ducimus voluptates reiciendis quaerat provident impedit, deleniti suscipit exercitationem maxime, consectetur, reprehenderit laboriosam. Repellendus quam tempora sit eveniet quasi.
+        </p>
+        <button onclick="test()">test</button>
+        <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum similique consequatur ducimus voluptates reiciendis quaerat provident impedit, deleniti suscipit exercitationem maxime, consectetur, reprehenderit laboriosam. Repellendus quam tempora sit eveniet quasi.
+        </p>
+    </div>
+    <script>
+        var loginButtonPayload = {
+            "nonce": "551916010620083932424244234534434523566", 
+            "timestamp": 1614152444,
+            "siteId": 12,
+            "userId": "dc99be6e-ccd5-49df-a8a9-64fc2972d1e7", 
+            "userSourcedId": "1122334455667788",
+            "returnURL": "https://wagstaff.login.beable.com", 
+            "username": "bbelcher",
+            "firstName": "Bob",
+            "lastName": "Belcher",
+            "courseId": "ACT",
+            "classes": [
+                {
+                    "classId": "aa3405b8-51cc-477a-96db-987a8e4ee5fb", 
+                    "className": "Cooking 101",
+                    "classSourcedId": "13123",
+                    "schoolId": "baf14980-e079-4666-8a99-fedc650e0666", 
+                    "schoolName": "Wagstaff School",
+                    "schoolSourcedId": "163",
+                    "role": "student",
+                    "categoryIds": ["0f57ac25-ba93-431b-8c3b-d887a9d38c82"],
+                } 
+            ],
+            "districtId": "12",
+            "districtName": "Wagstaff County" 
+        };
+        var loginButtonPayload = {
+            "nonce": "596554d4b4dd8df78ac9d9fd8bb180f33bf3dcade306f0efead1ea0b9a43c965",
+            "siteId": 12873,
+            "userId": "969cd200-2f24-11eb-8e6b-3191b948ef13",
+            "classes": [
+                {
+                    "role": "teacher",
+                    "classId": "967e9ba0-2f24-11eb-8e6b-3191b948ef13",
+                    "schoolId": "96640ec0-2f24-11eb-8e6b-3191b948ef13",
+                    "className": "Demo Class",
+                    "schoolName": "Test School",
+                    "classSourcedId": "8001-20210223",
+                    "schoolSourcedId": "3000-20210223"
+                },
+                {
+                    "role": "teacher",
+                    "classId": "967ec2b0-2f24-11eb-8e6b-3191b948ef13",
+                    "schoolId": "96640ec0-2f24-11eb-8e6b-3191b948ef13",
+                    "className": "Demo Class A",
+                    "schoolName": "Test School",
+                    "classSourcedId": "8002-20210223",
+                    "schoolSourcedId": "3000-20210223"
+                }
+            ],
+            "courseId": "SAT",
+            "lastName": "teacherlast1",
+            "username": "teacher1",
+            "firstName": "teacherfirst1",
+            "returnURL": "https://testaheadbeable.qa.beable.com/login/logout",
+            "timestamp": 1614089855,
+            "districtId": 12873,
+            "districtName": "TestAhead Sandbox",
+            "userSourcedId": "6001-20210223"
+        };
+        var sig = '';
+        var options = {
+            // label: "test",
+            elem: document.currentScript,
+            redirect: false
+        }
+        exampal.renderSsoButton(loginButtonPayload,options,sig);
+    </script>
+</body>
+</html>
