@@ -7,7 +7,9 @@
 </head>
 <body>
   <script>
-    document.cookie = "key=value; Path=/; Secure=true;";
+      const urlParams = new URLSearchParams(window.location.search),
+              token = urlParams.get('token');
+    document.cookie = "key="+token+"; Path=/; Secure=true;";
   </script>
 </body>
 </html>
