@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSO Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.3/tailwind.min.css" integrity="sha512-wl80ucxCRpLkfaCnbM88y4AxnutbGk327762eM9E/rRTvY/ZGAHWMZrYUq66VQBYMIYDFpDdJAOGSLyIPHZ2IQ==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        (function (a,b,c,d,e) {
+        var f=a.exampal={_i:{k:e,cls:[]}};c.forEach(function(fn){f[fn]=function(){f._i.cls.push([fn,Array.prototype.slice.call(arguments)]);}});
+        var s=b.createElement('script');s.async=true;s.dataset.env=e;s.src=d,fs=b.getElementsByTagName('script')[0];fs.parentNode.insertBefore(s,fs);
+        })(window,document,['renderSsoButton','callSSO','setCallback'],'https://staging-beable.exampal.com/sdk/1.1.2/sdk.js','74615efb-09f5-4bfd-8f47-948ed5cb3628');
+    </script>
+</head>
+<body>
+    <script>
+        function base64url(source) {
+            encodedSource = CryptoJS.enc.Base64.stringify(source);
+            encodedSource = encodedSource.replace(/=+$/, "");
+            encodedSource = encodedSource.replace(/\+/g, "-");
+            encodedSource = encodedSource.replace(/\//g, "_");
+            return encodedSource;
+        }
+        function addIAT(x) {
+            return Math.floor(Date.now() / 1000) - (x ? x : 10000);
+        }
+
+        function addNBF(x) {
+            return Math.floor(Date.now() / 1000) - (x ? x : 10000);
+        }
+
+        function addEXP(x) {
+            return Math.floor(Date.now() / 1000) + (x ? x : 3600);
+        }
+
+        function uuidv4() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function uuidInInput(selector) {
+            $(selector).val(uuidv4());
+        }
+
+        exampal.setCallback(function(event){
+            console.log("callback",event.data);
+            $("#response").val(JSON.stringify(event.data));
+        });
+        function sendPayload(payload) {
+            exampal.callSSO({'sig':payload});
+        }
+    </script>
+    <script>
+        var classSegement = {
+            "classId":"",
+            "className":"",
+            "classSourcedId":"",
+            "schoolId":"",
+            "schoolName":"",
+            "schoolSourcedId":"",
+            "role":""
+        };
+        var payload = {
+            "siteId":0,
+            "userId":"",
+            "userSourcedId":"",
+            "districtId":0,
+            "returnURL":"",
+            "districtName":"",
+            "username":"",
+            "firstName":"",
+            "lastName":"",
+            "courseId":"",
+            "classes":[],
+            "nonce":""
+        };
+        var header = {
+            "typ": "JWT",
+            "alg": "HS256"
+        };
+
+        $(function(){
+            $("#generateSig").on("click",function(){
+                let newPayload = payload;
+                newPayload.siteId = parseInt($("input[name=siteId]").val()) ?? 0;
+                newPayload.userId = $("input[name=userId]").val();
+                newPayload.userSourcedId = $("input[name=userSourcedId]").val();
+                newPayload.districtId = parseInt($("input[name=districtId]").val()) ?? 0;
+                newPayload.districtName = $("input[name=districtName]").val();
+                newPayload.returnURL = $("input[name=returnURL]").val();
+                newPayload.username = $("input[name=username]").val();
+                newPayload.firstName = $("input[name=firstName]").val();
+                newPayload.lastName = $("input[name=lastName]").val();
+                newPayload.courseId = $("input[name=courseId]:checked").val();
+                newPayload.nonce = uuidv4();
+                newPayload.iat = addIAT();
+                newPayload.exp = addEXP();
+                newPayload.nbf = addNBF();
+                newPayload.classes = [];
+                
+                for(var c=0; c<3; ++c) {
+                    let classId = $('input[name=\'classId['+c+']\']').val(),
+                        classSourcedId = $('input[name=\'classSourcedId['+c+']\']').val(),
+                        className = $('input[name=\'className['+c+']\']').val(),
+                        schoolId = $('input[name=\'schoolId['+c+']\']').val(),
+                        schoolSourcedId = $('input[name=\'schoolSourcedId['+c+']\']').val(),
+                        schoolName = $('input[name=\'schoolName['+c+']\']').val(),
+                        role = $('select[name=\'role['+c+']\'] option:checked').val();
+
+                    if(classId && classSourcedId && className && schoolId && schoolSourcedId && schoolName && role) {
+                        let payloadEntry = classSegement;
+                        payloadEntry.classId = classId;
+                        payloadEntry.classSourcedId = classSourcedId;
+                        payloadEntry.className = className;
+                        payloadEntry.schoolId = schoolId;
+                        payloadEntry.schoolSourcedId = schoolSourcedId;
+                        payloadEntry.schoolName = schoolName;
+                        payloadEntry.role = role;
+                        newPayload.classes.push(payloadEntry);
+                    }
+                }
+
+                console.log(newPayload);
+
+                var secret = CryptoJS.enc.Base64.parse("bSFxS0dKd05EdDdtN0JYUFcqQUV2dFJrUUN6S2lfcVFOeWlNQ3lWUip4ZlFZWlFUUXVDIV8uaWtAZC1ac284RA==");
+
+                // encode header
+                var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+                var encodedHeader = base64url(stringifiedHeader);
+
+                // encode data
+                var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(newPayload));
+                var encodedData = base64url(stringifiedData);
+
+                // build token
+                var token = encodedHeader + "." + encodedData;
+
+                // sign token
+                var signature = CryptoJS.HmacSHA256(token, secret);
+                signature = base64url(signature);
+
+                $("textarea[name=sig]").val(token + "." + signature);
+                
+                newPayload = null;
+            });
+
+            $("#sendRequest").on("click", function(){
+                sendPayload($("textarea[name=sig]").val());
+            });
+        });
+       
+    </script>
+
+    <div class="flex min-h-screen bg-gray-50 dark:bg-gray-900 text-black">        
+        <div class="container mx-auto">
+            <div class="mx-auto my-2 bg-white px-5 rounded-md shadow-sm">
+                <div class="text-center">
+                    <h1 class="my-1 text-xl font-semibold text-gray-700 dark:text-gray-200">SSO payload generator</h1>
+                </div>
+                <div class="m-2">
+                    <div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">siteId:</span>
+                            <input name="siteId" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="site id" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">userId: <button onclick="uuidInInput('input[name=userId]');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button></span>
+                            <input name="userId" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="user id" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">userSourcedId:</span>
+                            <input name="userSourcedId" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="user sourced id" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">districtId:</span>
+                            <input name="districtId" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="district id" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">districtName:</span>
+                            <input name="districtName" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="district name" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">returnURL:</span>
+                            <input name="returnURL" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="return url" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">firstName:</span>
+                            <input name="firstName" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="first name" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">lastName:</span>
+                            <input name="lastName" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="last name" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">username:</span>
+                            <input name="username" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="user name" />
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">courseId:</span>
+                            <div class="border border-2 rounded-r px-4 w-full text-black">
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="courseId" value="ACT" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">ACT</span>
+                                </label>
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="courseId" value="SAT" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">SAT</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="py-3 w-full">
+                        <div class="shadow overflow-hidden rounded border-b border-gray-200">
+                            <table class="min-w-full bg-white">
+                                <thead class="bg-gray-800 text-white">
+                                <tr>
+                                    <th class="text-left py-3 px-4 text-xs">classId</th>
+                                    <th class="text-left py-3 px-4 text-xs">classSourcedId</th>
+                                    <th class="text-left py-3 px-4 text-xs">className</th>
+                                    <th class="text-left py-3 px-4 text-xs">schoolId</th>
+                                    <th class="text-left py-3 px-4 text-xs">schoolSourcedId</th>
+                                    <th class="text-left py-3 px-4 text-xs">schoolName</td>
+                                    <th class="text-left py-3 px-4 text-xs">role</td>
+                                </tr>
+                                </thead>
+                                <tbody class="text-gray-700">
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[0]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[0]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[0]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[0]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[1]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[1]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[1]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[1]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[2]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[2]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[2]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[2]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <button id="generateSig" class="bg-blue-600 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">Generate Signature</button>
+                    <textarea name="sig" class="autoexpand tracking-wide py-2 px-4 my-2 h-32 leading-relaxed appearance-none block w-full border border-gray-200 rounded text-sm"></textarea>
+                    <button id="sendRequest" class="bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 rounded">Send Request</button>
+                    <textarea id="response" class="autoexpand tracking-wide py-2 px-4 my-2 leading-relaxed appearance-none block w-full border border-gray-200 rounded"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
