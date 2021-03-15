@@ -9,7 +9,8 @@
   <script>
       const urlParams = new URLSearchParams(window.location.search),
               token = urlParams.get('token');
-    document.cookie = "token="+token+"; Path=/; Secure=true; domain=.exampal.com";
+    document.cookie = "token="+token+"; Path=/; Secure=true; domain=.exampal.com";\
+      console.log("here");
   </script>
 </body>
 </html>
