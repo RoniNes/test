@@ -25,15 +25,15 @@
             return encodedSource;
         }
         function addIAT(x) {
-            return Math.floor(Date.now() / 1000) - (x ? x : 10000);
+            return Math.floor(Date.now() / 1000) - 10000;
         }
 
         function addNBF(x) {
-            return Math.floor(Date.now() / 1000) - (x ? x : 10000);
+            return x ? parseInt(x) : (Math.floor(Date.now() / 1000) - 10000);
         }
 
         function addEXP(x) {
-            return Math.floor(Date.now() / 1000) + (x ? x : 3600);
+            return x ? parseInt(x) : (Math.floor(Date.now() / 1000) + 3600);
         }
 
         function uuidv4() {
@@ -54,6 +54,30 @@
         function sendPayload(payload) {
             exampal.callSSO({'sig':payload});
         }
+
+        function getClassByIndex(index) {
+            let classId = $('input[name=\'classId['+index+']\']').val(),
+                classSourcedId = $('input[name=\'classSourcedId['+index+']\']').val(),
+                className = $('input[name=\'className['+index+']\']').val(),
+                schoolId = $('input[name=\'schoolId['+index+']\']').val(),
+                schoolSourcedId = $('input[name=\'schoolSourcedId['+index+']\']').val(),
+                schoolName = $('input[name=\'schoolName['+index+']\']').val(),
+                role = $('select[name=\'role['+index+']\'] option:checked').val();
+            
+            if(classId && classSourcedId && className && schoolId && schoolSourcedId && schoolName && role) {
+                return {
+                    'classId':classId,
+                    'classSourcedId':classSourcedId,
+                    'className':className,
+                    'schoolId':schoolId,
+                    'schoolSourcedId':schoolSourcedId,
+                    'schoolName':schoolName,
+                    'role':role
+                }
+            }
+            return null;
+        }
+
     </script>
     <script>
         var classSegement = {
@@ -99,31 +123,16 @@
                 newPayload.courseId = $("input[name=courseId]:checked").val();
                 newPayload.nonce = uuidv4();
                 newPayload.iat = addIAT();
-                newPayload.exp = addEXP();
-                newPayload.nbf = addNBF();
+                newPayload.exp = addEXP($("input[name=exp]").val());
+                newPayload.nbf = addNBF($("input[name=nbf]").val());
                 newPayload.classes = [];
                 
-                for(var c=0; c<3; ++c) {
-                    let classId = $('input[name=\'classId['+c+']\']').val(),
-                        classSourcedId = $('input[name=\'classSourcedId['+c+']\']').val(),
-                        className = $('input[name=\'className['+c+']\']').val(),
-                        schoolId = $('input[name=\'schoolId['+c+']\']').val(),
-                        schoolSourcedId = $('input[name=\'schoolSourcedId['+c+']\']').val(),
-                        schoolName = $('input[name=\'schoolName['+c+']\']').val(),
-                        role = $('select[name=\'role['+c+']\'] option:checked').val();
-
-                    if(classId && classSourcedId && className && schoolId && schoolSourcedId && schoolName && role) {
-                        let payloadEntry = classSegement;
-                        payloadEntry.classId = classId;
-                        payloadEntry.classSourcedId = classSourcedId;
-                        payloadEntry.className = className;
-                        payloadEntry.schoolId = schoolId;
-                        payloadEntry.schoolSourcedId = schoolSourcedId;
-                        payloadEntry.schoolName = schoolName;
-                        payloadEntry.role = role;
-                        newPayload.classes.push(payloadEntry);
-                    }
-                }
+                let class1 = getClassByIndex(0);
+                let class2 = getClassByIndex(1);
+                let class3 = getClassByIndex(2);
+                if(class1) newPayload.classes.push(class1);
+                if(class2) newPayload.classes.push(class2);
+                if(class3) newPayload.classes.push(class3);
 
                 console.log(newPayload);
 
@@ -209,6 +218,16 @@
                                 <label class="inline-flex items-center mt-2">
                                     <input name="courseId" value="SAT" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">SAT</span>
                                 </label>
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="courseId" value="NA" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">NA</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">nbf, exp:</span>
+                            <div class="w-full whitespace-no-wrap">
+                                <label class="px-2" for="nbf">nbf:</label><input name="nbf" class="border border-2 rounded-r px-4 py-2 w-1/3 text-black" type="text" />
+                                <label class="px-2" for="exp">exp:</label><input name="exp" class="border border-2 rounded-r px-4 py-2 w-1/3 text-black" type="text" />
                             </div>
                         </div>
                     </div>
@@ -328,3 +347,4 @@
     </div>
 </body>
 </html>
+
