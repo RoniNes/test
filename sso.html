@@ -111,6 +111,7 @@
         $(function(){
             $("#generateSig").on("click",function(){
                 let newPayload = payload;
+                newPayload.audience = 'exampal';
                 newPayload.siteId = parseInt($("input[name=siteId]").val()) ?? 0;
                 newPayload.userId = $("input[name=userId]").val();
                 newPayload.userSourcedId = $("input[name=userSourcedId]").val();
