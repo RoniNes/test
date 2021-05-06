@@ -121,6 +121,8 @@
                 newPayload.username = $("input[name=username]").val();
                 newPayload.firstName = $("input[name=firstName]").val();
                 newPayload.lastName = $("input[name=lastName]").val();
+                newPayload.testDate = $("input[name=testDate]").val();
+                newPayload.language = $("input[name=language]:checked").val();
                 newPayload.courseId = $("input[name=courseId]:checked").val();
                 newPayload.nonce = uuidv4();
                 newPayload.iat = addIAT();
@@ -223,6 +225,24 @@
                                     <input name="courseId" value="NA" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">NA</span>
                                 </label>
                             </div>
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">language:</span>
+                            <div class="border border-2 rounded-r px-4 w-full text-black">
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="language" value="en" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">en</span>
+                                </label>
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="language" value="es" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">es</span>
+                                </label>
+                                <label class="inline-flex items-center mt-2">
+                                    <input name="language" value="de" type="radio" class="form-radio h-5 w-5 text-gray-600"><span class="ml-2 text-gray-700">de</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">testDate:</span>
+                            <input name="testDate" class="border border-2 rounded-r px-4 py-2 w-full text-black" type="text" placeholder="2021-06-25" />
                         </div>
                         <div class="flex">
                             <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">nbf, exp:</span>
