@@ -111,7 +111,6 @@
         $(function(){
             $("#generateSig").on("click",function(){
                 let newPayload = payload;
-                newPayload.audience = 'exampal';
                 newPayload.siteId = parseInt($("input[name=siteId]").val()) ?? 0;
                 newPayload.userId = $("input[name=userId]").val();
                 newPayload.userSourcedId = $("input[name=userSourcedId]").val();
@@ -124,6 +123,7 @@
                 newPayload.testDate = $("input[name=testDate]").val();
                 newPayload.language = $("input[name=language]:checked").val();
                 newPayload.courseId = $("input[name=courseId]:checked").val();
+                newPayload.categoryIds = $("input[name=category_ids]:checked").map(function(){ return $(this).val(); }).get();
                 newPayload.nonce = uuidv4();
                 newPayload.iat = addIAT();
                 newPayload.exp = addEXP($("input[name=exp]").val());
@@ -133,9 +133,25 @@
                 let class1 = getClassByIndex(0);
                 let class2 = getClassByIndex(1);
                 let class3 = getClassByIndex(2);
+                let class4 = getClassByIndex(3);
+                let class5 = getClassByIndex(4);
+                let class6 = getClassByIndex(5);
+                let class7 = getClassByIndex(6);
+                let class8 = getClassByIndex(7);
+                let class9 = getClassByIndex(8);
+                let class10 = getClassByIndex(9);
+                let class11 = getClassByIndex(10);
                 if(class1) newPayload.classes.push(class1);
                 if(class2) newPayload.classes.push(class2);
                 if(class3) newPayload.classes.push(class3);
+                if(class4) newPayload.classes.push(class4);
+                if(class5) newPayload.classes.push(class5);
+                if(class6) newPayload.classes.push(class6);
+                if(class7) newPayload.classes.push(class7);
+                if(class8) newPayload.classes.push(class8);
+                if(class9) newPayload.classes.push(class9);
+                if(class10) newPayload.classes.push(class10);
+                if(class11) newPayload.classes.push(class11);
 
                 console.log(newPayload);
 
@@ -251,6 +267,26 @@
                                 <label class="px-2" for="exp">exp:</label><input name="exp" class="border border-2 rounded-r px-4 py-2 w-1/3 text-black" type="text" />
                             </div>
                         </div>
+                        <div class="flex">
+                            <span class="text-sm w-1/4 border border-2 rounded-l px-4 py-2 bg-gray-500 whitespace-no-wrap">category ids:</span>
+                            <div class="border border-2 rounded-r px-4 w-full text-black">
+                                <fieldset class="border rounded px-2">
+                                    <legend class="px-2">ACT</legend>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="1" /> [1] General</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="2" /> [2] Math</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="3" /> [3] English</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="4" /> [4] Reading</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="5" /> [5] Science</label>
+                                </fieldset>
+                                <fieldset class="border rounded px-2">
+                                    <legend class="px-2">SAT</legend>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="6" /> [6] General</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="7" /> [7] Reading</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="8" /> [8] Math</label>
+                                    <label class="inline-flex items-center mt-2 mr-3 text-sm"><input type="checkbox" name="category_ids" class="mr-1" value="9" /> [9] Writing & Language</label>
+                                </fieldset>
+                            </div>
+                        </div>
                     </div>
                     <div class="py-3 w-full">
                         <div class="shadow overflow-hidden rounded border-b border-gray-200">
@@ -348,6 +384,238 @@
                                         </td>
                                         <td class="text-left py-1">
                                             <select name="role[2]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[3]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[3]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[3]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[3]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[4]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[4]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[4]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[4]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[5]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[5]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[5]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[5]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[6]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[6]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[6]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[6]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[7]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[7]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[7]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[7]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[8]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[8]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[8]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[8]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[9]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[9]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[9]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[9]" class="border border-2 px-1 py-2 w-full text-black text-xs">
+                                                <option value=""></option>
+                                                <option value="student">student</option>
+                                                <option value="teacher">teacher</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left py-1">
+                                            <input name="classId[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'classId[10]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="classSourcedId[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="className[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolId[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                            <button onclick="uuidInInput('input[name=\'schoolId[10]\']');" class="bg-blue-600 hover:bg-blue-400 text-white px-2 py-1 rounded text-xs">uuid</button>
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolSourcedId[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <input name="schoolName[10]" class="border border-2 px-1 py-2 w-3/4 text-black text-xs" type="text" placeholder="" />
+                                        </td>
+                                        <td class="text-left py-1">
+                                            <select name="role[10]" class="border border-2 px-1 py-2 w-full text-black text-xs">
                                                 <option value=""></option>
                                                 <option value="student">student</option>
                                                 <option value="teacher">teacher</option>
