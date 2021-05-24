@@ -177,6 +177,49 @@
                 newPayload = null;
             });
 
+            $("#decodeSig").on("click", function(){
+                var token = $("textarea[name=sig]").val();
+                if(token.length)
+                {
+                    var payload = JSON.parse(atob(token.split('.')[1]));
+
+                    $("input[name=siteId]").val(payload.siteId);
+                    $("input[name=userId]").val(payload.userId);
+                    $("input[name=userSourcedId]").val(payload.userSourcedId);
+                    $("input[name=districtId]").val(payload.districtId);
+                    $("input[name=districtName]").val(payload.districtName);
+                    $("input[name=returnURL]").val(payload.returnURL);
+                    $("input[name=username]").val(payload.username);
+                    $("input[name=firstName]").val(payload.firstName);
+                    $("input[name=lastName]").val(payload.lastName);
+                    $("input[name=testDate]").val(payload.testDate);
+                    $("input[name=testDate]").val(payload.testDate);
+
+                    $("input[name=language][value="+payload.language+"]").prop('checked','checked');
+                    $("input[name=courseId][value="+payload.courseId+"]").prop('checked','checked');
+                    
+                    for(var i=0, total_classes = payload.classes.length;i<total_classes;i++) {
+                        var entry = payload.classes[i];
+
+                        $("input[name='classId["+i+"]']").val(entry.classId);
+                        $("input[name='classSourcedId["+i+"]']").val(entry.classSourcedId);
+                        $("input[name='className["+i+"]']").val(entry.className);
+                        $("input[name='schoolId["+i+"]']").val(entry.schoolId);
+                        $("input[name='schoolSourcedId["+i+"]']").val(entry.schoolSourcedId);
+                        $("input[name='schoolName["+i+"]']").val(entry.schoolName);
+
+                        $("select[name='role["+i+"]'] option[value="+entry.role+"]").prop('selected','selected');
+                    };
+
+                    console.log(payload.categoryIds);
+
+                    for(var i=0, total_categories = payload.categoryIds.length;i<total_categories;i++) {
+                        var categoryId = payload.categoryIds[i];
+                        $("input[name=category_ids][value="+categoryId+"]").prop('checked','checked');
+                    }
+                }
+            });
+
             $("#sendRequest").on("click", function(){
                 sendPayload($("textarea[name=sig]").val());
             });
@@ -626,7 +669,16 @@
                             </table>
                         </div>
                     </div>
-                    <button id="generateSig" class="bg-blue-600 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded">Generate Signature</button>
+                    <div class="flex justify-between">
+                        <button id="generateSig" class="bg-blue-600 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded inline-flex">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+                            Generate Signature
+                        </button>
+                        <button id="decodeSig" class="bg-yellow-600 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded inline-flex">
+                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+                            Decode Signature
+                        </button>
+                    </div>
                     <textarea name="sig" class="autoexpand tracking-wide py-2 px-4 my-2 h-32 leading-relaxed appearance-none block w-full border border-gray-200 rounded text-sm"></textarea>
                     <button id="sendRequest" class="bg-green-600 hover:bg-green-400 text-white font-bold py-2 px-4 rounded">Send Request</button>
                     <textarea id="response" class="autoexpand tracking-wide py-2 px-4 my-2 leading-relaxed appearance-none block w-full border border-gray-200 rounded"></textarea>
